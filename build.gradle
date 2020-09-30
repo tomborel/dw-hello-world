@@ -1,6 +1,15 @@
-plugins {
-    id 'java'
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:6.0.0'
+    }
 }
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 group 'com.test.hello.world'
 version '1.0-SNAPSHOT'
@@ -17,10 +26,14 @@ dependencies {
 
 }
 
+shadowJar {
+    mergeServiceFiles()
+    mainClassName = 'com.test.hello.world.HelloWorldApplication'
+}
+
 jar {
     manifest {
         attributes(
-                'Class-Path': configurations.compile.join(' '),
                 'Main-Class': 'com.test.hello.world.HelloWorldApplication'
         )
     }

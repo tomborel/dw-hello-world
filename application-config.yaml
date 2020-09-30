@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: application-config
+data:
+  config.yaml: |
+    server:
+      applicationConnectors:
+        - type: http
+          port: 80
+      adminConnectors:
+        - type: http
+          port: 81

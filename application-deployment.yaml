@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: application
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: application
+  template:
+    metadata:
+      labels:
+        app: application
+    spec:
+      containers:
+        - name: application
+          image: thomasborel/application:test
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+            - containerPort: 81
+          volumeMounts:
+            - name: config-volume
+              mountPath: /home
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 81
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 81
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+      volumes:
+        - name: config-volume
+          configMap:
+            name: application-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: application
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: application
